@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
 
@@ -44,32 +43,43 @@ void ami_desktop_connect_signals(AmiDesktop *desktop) {
     g_signal_connect (desktop->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 }
 
+void ami_desktop_set_background(AmiDesktop *desktop) {
+
+    GdkPixmap *pixmap;
+    GdkPixbuf *pixbuf;
+    GtkStyle *style;
+
+    pixbuf = gdk_pixbuf_new_from_file("/home/ahernandez/ego.png", NULL);
+    gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 0);
+
+    style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(desktop->window)));
+    if (style->bg_pixmap[GTK_STATE_NORMAL]) {
+        g_object_unref(style->bg_pixmap[GTK_STATE_NORMAL]);
+    }
+    style->bg_pixmap[GTK_STATE_NORMAL] = g_object_ref(pixmap);
+    gtk_widget_set_style (GTK_WIDGET(desktop->window), style);
+
+    g_object_unref (pixbuf);
+    g_object_unref (pixmap);
+    g_object_unref (style);
+}
+
 void ami_desktop_close_button(AmiDesktop *desktop) {
 
     GtkWidget *box;
     GtkWidget *button;
 
-    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
+    box = gtk_vbox_new (FALSE, 0);
     button = gtk_button_new_with_label("Close");
 
-
-    //GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file ("/home/ahernandez/ego.png", NULL);
-    //GdkPixmap *pixmap;
-    //gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, NULL, 0);
-    //gdk_window_set_back_pixmap (GTK_WIDGET(window)->window, pixmap, FALSE);
-    //g_object_unref (pixbuf);
-    //g_object_unref (pixmap);
-
-
     gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+    //gtk_box_pack_start (GTK_BOX (box), desktop->icon_view, TRUE, TRUE, 0);
     gtk_container_add (GTK_CONTAINER (desktop->window), box);
 
     gtk_widget_show_all(box);
 
     /* Connect signals */
-    /* Show open dialog when opening a file */
     g_signal_connect (button, "clicked", G_CALLBACK (gtk_main_quit), NULL);
-
 }
 
 void ami_desktop_init(AmiDesktop *desktop) {
@@ -91,6 +101,7 @@ void ami_desktop_init(AmiDesktop *desktop) {
     gtk_window_set_resizable(GTK_WINDOW(desktop->window), FALSE);
 
     ami_desktop_connect_signals(desktop);
+    ami_desktop_set_background(desktop);
     ami_desktop_close_button(desktop);
 
     gtk_widget_show_all(desktop->window);
