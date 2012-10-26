@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if test "x$DISPLAY" = "x" 
+then
+  echo "$0: Starting X server"
+  prog=xinit
+else
+  echo "$0: X server already running on display $DISPLAY"
+  prog=/bin/bash
+fi
+
+$prog /common/src/ami-desktop/scripts/xinitrc
+
