@@ -9,5 +9,5 @@ else
   prog=/bin/bash
 fi
 
-$prog /common/src/ami-desktop/scripts/xinitrc
+$prog /common/src/AmiDesktop/ami-desktop/scripts/xinitrc
 

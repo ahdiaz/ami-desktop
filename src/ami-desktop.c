@@ -31,9 +31,6 @@ AmiDesktop *ami_desktop_new(GdkScreen *gscreen) {
 }
 
 void ami_desktop_free(AmiDesktop *desktop) {
-    g_object_unref(desktop->gscreen);
-    g_object_unref(desktop->window);
-    g_object_unref(desktop->icon_view);
     g_free(desktop);
 }
 
@@ -64,24 +61,6 @@ void ami_desktop_set_background(AmiDesktop *desktop) {
     g_object_unref (style);
 }
 
-void ami_desktop_close_button(AmiDesktop *desktop) {
-
-    GtkWidget *box;
-    GtkWidget *button;
-
-    box = gtk_vbox_new (FALSE, 0);
-    button = gtk_button_new_with_label("Close");
-
-    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-    //gtk_box_pack_start (GTK_BOX (box), desktop->icon_view, TRUE, TRUE, 0);
-    gtk_container_add (GTK_CONTAINER (desktop->window), box);
-
-    gtk_widget_show_all(box);
-
-    /* Connect signals */
-    g_signal_connect (button, "clicked", G_CALLBACK (gtk_main_quit), NULL);
-}
-
 void ami_desktop_init(AmiDesktop *desktop) {
 
     gint sw, sh;
@@ -95,14 +74,15 @@ void ami_desktop_init(AmiDesktop *desktop) {
     sh = gdk_screen_get_height(desktop->gscreen);
 
     gtk_widget_set_size_request(GTK_WIDGET(desktop->window), sw, sh);
-    gtk_window_fullscreen(GTK_WINDOW(desktop->window));
-    //gtk_window_resize(GTK_WINDOW(desktop->window), sw, sh);
+    gtk_window_resize(GTK_WINDOW(desktop->window), sw, sh);
     gtk_window_move(GTK_WINDOW(desktop->window), 0, 0);
     gtk_window_set_resizable(GTK_WINDOW(desktop->window), FALSE);
 
     ami_desktop_connect_signals(desktop);
     ami_desktop_set_background(desktop);
-    ami_desktop_close_button(desktop);
 
     gtk_widget_show_all(desktop->window);
+    gtk_widget_queue_draw(GTK_WIDGET(desktop->window));
+
+    gtk_window_set_decorated(GTK_WINDOW(desktop->window), FALSE);
 }
