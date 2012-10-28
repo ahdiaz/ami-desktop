@@ -37,6 +37,7 @@ void ami_popupmenu_init(GtkWidget *menu) {
     }
 
     g_list_free(list);
+    g_list_free(node);
 }
 
 GtkWidget *ami_popupmenu_new() {

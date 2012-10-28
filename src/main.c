@@ -10,20 +10,6 @@
 #include "ami-panel.h"
 
 
-void start_term() {
-
-    GAppInfo *app;
-
-    app = g_app_info_create_from_commandline(
-        "terminator",
-        "Terminator",
-        G_APP_INFO_CREATE_NONE,
-        NULL
-    );
-
-    g_app_info_launch(app, NULL, NULL, NULL);
-}
-
 int main(int argc, char *argv[]) {
 
     GdkScreen *gscreen;
@@ -38,8 +24,6 @@ int main(int argc, char *argv[]) {
     ami_desktop_init(desktop);
     panel = ami_panel_new(desktop);
     ami_panel_init(panel);
-
-    //start_term();
 
     gtk_main();
 
