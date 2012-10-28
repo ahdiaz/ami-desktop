@@ -1,6 +1,4 @@
 #!/bin/bash
 
 xfwm4 --daemon
-ami-desktop &
-ami-panel &
-terminator &
+ami-desktop
