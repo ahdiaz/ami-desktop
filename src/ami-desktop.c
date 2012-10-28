@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "ami-popupmenu.h"
+
 
 typedef struct {
     GdkScreen *gscreen;
@@ -34,10 +36,42 @@ void ami_desktop_free(AmiDesktop *desktop) {
     g_free(desktop);
 }
 
+static gint ami_desktop_clicked(AmiDesktop *desktop, GdkEvent *event, gpointer user_data) {
+
+    GtkWidget *menu;
+    GdkEventButton *event_button;
+
+    if (event->type != GDK_BUTTON_RELEASE) {
+        return FALSE;
+    }
+
+    event_button = (GdkEventButton *) event;
+
+    if (event_button->button != 3) {
+        return FALSE;
+    }
+
+    menu = ami_popupmenu_new();
+    gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
+        0, event_button->time);
+
+    return TRUE;
+}
+
 void ami_desktop_connect_signals(AmiDesktop *desktop) {
 
+    //GtkWidget *ebox;
+
     /* Exit when the window is closed */
-    g_signal_connect (desktop->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    //g_signal_connect (desktop->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+
+    //ebox = gtk_event_box_new();
+    //gtk_event_box_set_visible_window(GTK_EVENT_BOX(ebox), FALSE);
+    //gtk_container_add(GTK_CONTAINER(desktop->window), GTK_WIDGET(ebox));
+    //g_signal_connect(ebox, "popup-menu", G_CALLBACK(ami_desktop_clicked), NULL);
+
+    //g_signal_connect(desktop->window, "popup-menu", G_CALLBACK(ami_desktop_clicked), NULL);
+    g_signal_connect(desktop->window, "button-release-event", G_CALLBACK(ami_desktop_clicked), NULL);
 }
 
 void ami_desktop_set_background(AmiDesktop *desktop) {
@@ -46,7 +80,8 @@ void ami_desktop_set_background(AmiDesktop *desktop) {
     GdkPixbuf *pixbuf;
     GtkStyle *style;
 
-    pixbuf = gdk_pixbuf_new_from_file("/home/ahernandez/ego.png", NULL);
+    pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/wp_03.jpg", NULL);
+    //pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/wp_01.png", NULL);
     gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 0);
 
     style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(desktop->window)));
@@ -77,6 +112,8 @@ void ami_desktop_init(AmiDesktop *desktop) {
     gtk_window_resize(GTK_WINDOW(desktop->window), sw, sh);
     gtk_window_move(GTK_WINDOW(desktop->window), 0, 0);
     gtk_window_set_resizable(GTK_WINDOW(desktop->window), FALSE);
+
+    gtk_widget_set_events(desktop->window, GDK_BUTTON_RELEASE_MASK | GDK_KEY_RELEASE_MASK);
 
     ami_desktop_connect_signals(desktop);
     ami_desktop_set_background(desktop);
