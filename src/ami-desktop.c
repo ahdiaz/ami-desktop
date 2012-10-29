@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#include "ami-popupmenu.h"
+#include "ami-app-menu.h"
 
 
 typedef struct {
@@ -51,7 +51,7 @@ static gint ami_desktop_clicked(AmiDesktop *desktop, GdkEvent *event, gpointer u
         return FALSE;
     }
 
-    menu = ami_popupmenu_new();
+    menu = ami_app_menu_new();
     gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL,
         0, event_button->time);
 
@@ -60,17 +60,6 @@ static gint ami_desktop_clicked(AmiDesktop *desktop, GdkEvent *event, gpointer u
 
 void ami_desktop_connect_signals(AmiDesktop *desktop) {
 
-    //GtkWidget *ebox;
-
-    /* Exit when the window is closed */
-    //g_signal_connect (desktop->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
-
-    //ebox = gtk_event_box_new();
-    //gtk_event_box_set_visible_window(GTK_EVENT_BOX(ebox), FALSE);
-    //gtk_container_add(GTK_CONTAINER(desktop->window), GTK_WIDGET(ebox));
-    //g_signal_connect(ebox, "popup-menu", G_CALLBACK(ami_desktop_clicked), NULL);
-
-    //g_signal_connect(desktop->window, "popup-menu", G_CALLBACK(ami_desktop_clicked), NULL);
     g_signal_connect(desktop->window, "button-release-event", G_CALLBACK(ami_desktop_clicked), NULL);
 }
 
@@ -80,8 +69,7 @@ void ami_desktop_set_background(AmiDesktop *desktop) {
     GdkPixbuf *pixbuf;
     GtkStyle *style;
 
-    pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/wp_03.jpg", NULL);
-    //pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/wp_01.png", NULL);
+    pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/ami-desktop/graph/wp_01.jpg", NULL);
     gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 0);
 
     style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(desktop->window)));
