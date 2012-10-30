@@ -8,6 +8,7 @@
 
 #include "ami-desktop.h"
 #include "ami-panel.h"
+#include "config.h"
 
 
 int main(int argc, char *argv[]) {
@@ -18,6 +19,8 @@ int main(int argc, char *argv[]) {
 
     gtk_init(&argc, &argv);
 
+    ami_config_init();
+
     gscreen = gdk_display_get_default_screen(gdk_display_get_default());
 
     desktop = ami_desktop_new(gscreen);
@@ -27,6 +30,7 @@ int main(int argc, char *argv[]) {
 
     gtk_main();
 
+    ami_config_free();
     ami_panel_free(panel);
     ami_desktop_free(desktop);
 

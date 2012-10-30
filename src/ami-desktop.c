@@ -7,6 +7,7 @@
 #include <gtk/gtk.h>
 
 #include "ami-app-menu.h"
+#include "config.h"
 
 
 typedef struct {
@@ -69,7 +70,7 @@ void ami_desktop_set_background(AmiDesktop *desktop) {
     GdkPixbuf *pixbuf;
     GtkStyle *style;
 
-    pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/ami-desktop/graph/wp_01.jpg", NULL);
+    pixbuf = gdk_pixbuf_new_from_file(amiconfig->wallpaper, NULL);
     gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 0);
 
     style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(desktop->window)));

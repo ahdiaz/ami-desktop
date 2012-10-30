@@ -9,6 +9,8 @@
 #include "ami-desktop.h"
 #include "ami-app-menu.h"
 #include "ami-session-menu.h"
+#include "config.h"
+
 
 typedef struct {
     //GdkPixmap *bg_pixmap;
@@ -39,7 +41,7 @@ void ami_panel_set_background(AmiPanel *panel) {
     GdkPixbuf *pixbuf;
     GtkStyle *style;
 
-    pixbuf = gdk_pixbuf_new_from_file("/common/src/AmiDesktop/ami-desktop/graph/bg_panel_22.png", NULL);
+    pixbuf = gdk_pixbuf_new_from_file(amiconfig->bg_panel, NULL);
     gdk_pixbuf_render_pixmap_and_mask(pixbuf, &pixmap, NULL, 0);
 
     style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(panel->window)));
@@ -97,7 +99,7 @@ void ami_panel_init(AmiPanel *panel) {
     gtk_window_set_accept_focus(GTK_WINDOW(panel->window), FALSE);
 
     sw = gdk_screen_get_width(gscreen);
-    sh = 22;
+    sh = amiconfig->h_panel;
 
     gtk_widget_set_size_request(GTK_WIDGET(panel->window), sw, sh);
     gtk_window_resize(GTK_WINDOW(panel->window), sw, sh);
